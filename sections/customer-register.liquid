@@ -68,8 +68,53 @@
                 placeholder="NPI or License Number"
                 required
               >
-              <div class="npi-verification-status">
-                <span>Verifying NPI number</span>
+              <style>
+                .npi-verification-status {
+                  font-size: 0.75em;
+                  margin-top: -12px;
+                  text-align: left;
+                }
+
+                .npi-verification-status .hidden,
+                .npi-verification-status.hidden {
+                  display: none;
+                }
+
+                .npi-verification-status .loading:after {
+                  overflow: hidden;
+                  display: inline-block;
+                  vertical-align: bottom;
+                  -webkit-animation: ellipsis steps(4, end) 900ms infinite;
+                  animation: ellipsis steps(4, end) 900ms infinite;
+                  content: '\2026';
+                  /* ascii code for the ellipsis character */
+                  width: 0px;
+                }
+
+                @keyframes ellipsis {
+                  to {
+                    width: 14px;
+                  }
+                }
+
+                @-webkit-keyframes ellipsis {
+                  to {
+                    width: 14px;
+                  }
+                }
+
+                .npi-verification-status .valid {
+                  color: #2b9486;
+                }
+
+                .npi-verification-status .invalid {
+                  color: #cc0000;
+                }
+              </style>
+              <div class="npi-verification-status hidden">
+                <span class="loading hidden">Verifying NPI number</span>
+                <span class="valid hidden">Valid NPI number</span>
+                <span class="invalid hidden">Invalid NPI number</span>
               </div>
             </div>
 
@@ -151,6 +196,10 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('#CreateCustomerForm'); // check actual id in HTML
+    const npiVerificationStatus = document.querySelector('.npi-verification-status');
+    const loadingSpan = npiVerificationStatus.querySelector('.loading');
+    const validSpan = npiVerificationStatus.querySelector('.valid');
+    const invalidSpan = npiVerificationStatus.querySelector('.invalid');
 
     form.addEventListener(
       'submit',
@@ -158,12 +207,24 @@
         e.stopImmediatePropagation();
         e.preventDefault();
 
+        npiVerificationStatus.classList.remove('hidden');
+        loadingSpan.classList.remove('hidden');
+        invalidSpan.classList.add('hidden');
+        validSpan.classList.add('hidden');
+
         const npi = document.getElementById('NPI').value.trim();
 
         const isValid = await verifyNPI(npi);
 
         if (isValid.valid) {
+          validSpan.classList.remove('hidden');
+          invalidSpan.classList.add('hidden');
+          loadingSpan.classList.add('hidden');
+          form.submit(); // Submit the form if NPI is valid
         } else {
+          invalidSpan.classList.remove('hidden');
+          validSpan.classList.add('hidden');
+          loadingSpan.classList.add('hidden');
         }
       },
       true
