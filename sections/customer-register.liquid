@@ -20,8 +20,7 @@
           <!-- REVERT -->
           <div class="pro-only-alert">
             <b>Account Requirements:</b><br>
-            Products only available to medical professionals. NPI or license number required. Non-professional orders
-            will not be fulfilled.
+            Professional-products are only available to medical professionals and require an NPI number.
           </div>
 
           {% form 'create_customer', id: 'CreateCustomerForm', onSubmit: 'handleCreateCustomerFormSubmit(event)' %}
@@ -56,7 +55,7 @@
 
             <div class="float__wrapper">
               <label for="customer[note][NPI number]"
-                >NPI or License Number
+                >NPI Number
                 <span style="display:inline-block;font-size:12px; padding: 0px 4px; background:#cc0000;color:white;margin-left:4px;"
                   >REQUIRED</span
                 ></label
