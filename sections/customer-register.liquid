@@ -68,6 +68,9 @@
                 placeholder="NPI or License Number"
                 required
               >
+              <div class="npi-verification-status">
+                <span>Verifying NPI number</span>
+              </div>
             </div>
 
             <div class="float__wrapper">
@@ -120,17 +123,47 @@
 </div>
 
 <script>
+  async function verifyNPI(npi) {
+    if (!/^\d{10}$/.test(npi)) {
+      return { valid: false, reason: 'NPI number must be exactly 10 digits' };
+    }
+
+    try {
+      const response = await fetch(
+        `https://npi-check.angeloraphaelmendoza.workers.dev/?number=${encodeURIComponent(npi)}`
+      );
+
+      if (!response.ok) {
+        return { valid: false, reason: 'NPI API request failed' };
+      }
+
+      const data = await response.json();
+
+      if (data.valid) {
+        return { valid: true, data: data.data };
+      } else {
+        return { valid: false, reason: data.reason || 'NPI not found' };
+      }
+    } catch (error) {
+      return { valid: false, reason: 'Network error: ' + error.message };
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('#CreateCustomerForm'); // check actual id in HTML
 
     form.addEventListener(
       'submit',
       async function (e) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+
         const npi = document.getElementById('NPI').value.trim();
 
-        if (true) {
-          e.stopImmediatePropagation();
-          e.preventDefault();
+        const isValid = await verifyNPI(npi);
+
+        if (isValid.valid) {
+        } else {
         }
       },
       true
