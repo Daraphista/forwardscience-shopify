@@ -1,10 +1,5 @@
-<!-- REVERT -->
-{% comment %}
-  {%- assign show_price = 1 -%}
-  {%- assign show_price = product.tags contains 'patient-friendly' -%}
-{% endcomment %}
-
-{% if product.tags contains 'patient-friendly' or customer.id %}
+<!-- If product has 'patient-friendly' tag or customer is logged in, show price -->
+{% if product.tags contains 'patient-friendly' or customer.id %} 
   {% assign show_price = true %}
 {% endif %}
 
