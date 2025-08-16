@@ -1,6 +1,7 @@
-<!-- REVERT -->
-{%- assign show_price = 1 -%}
-{% comment %} {%- assign show_price = customer.id -%} {% endcomment %}
+<!-- If product has 'patient-friendly' tag or customer is logged in, show price -->
+{% if product.tags contains 'patient-friendly' or customer.id %}
+  {% assign show_price = true %}
+{% endif %}
 
 {% assign current_variant = product.selected_or_first_available_variant %}
 
@@ -31,7 +32,7 @@
 
   {%- if show_price -%}
     <div class="product__price__wrap">
-      {% if product.tags contains 'patient-friendly' %}
+      {% if show_price %}
         <div class="product__price__main" data-price-wrapper>
           <span class="product__price">
             <span
